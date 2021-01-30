@@ -5,17 +5,19 @@ import { dbClient } from '../diContainer';
 
 export const controllersRouter = express.Router({ mergeParams: true });
 
-controllersRouter.get('/:name/getAll', async (req, res) => {
+controllersRouter.get('/getAll', async (req, res) => {
     const { dbName, name } = req.params;
 
     const collection = await dbClient
         .getDatabase(dbName)
         .then((db) => db.getCollection(name));
 
-    return res.json(JSON.stringify(await collection.getAll()));
+    const items = await collection.getAll();
+
+    return res.json(items);
 });
 
-controllersRouter.post('/:name/add', async (req, res) => {
+controllersRouter.post('/add', async (req, res) => {
     const { dbName, name } = req.params;
     const items = req.body as IRecord[];
 
@@ -31,7 +33,7 @@ controllersRouter.post('/:name/add', async (req, res) => {
     return res.json({ message: 'Ok ' });
 });
 
-controllersRouter.delete('/:name/remove', async (req, res) => {
+controllersRouter.delete('/remove', async (req, res) => {
     const { dbName, name } = req.params;
     const ids = req.body;
 
@@ -47,7 +49,7 @@ controllersRouter.delete('/:name/remove', async (req, res) => {
     return res.json({ message: 'Ok ' });
 });
 
-controllersRouter.put('/:name/update', async (req, res) => {
+controllersRouter.put('/update', async (req, res) => {
     const { dbName, name } = req.params;
     const item = req.body as IRecord;
 
