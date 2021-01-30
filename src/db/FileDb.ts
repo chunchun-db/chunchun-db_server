@@ -1,7 +1,12 @@
 import * as path from 'path';
-import { IRecord, IDatabase } from '@chunchun-db/shared/dist';
+import { IRecord, IDatabase, ICollection } from '@chunchun-db/shared';
 
-import { isFileExists, renameFile, writeFile } from '@services/FileService';
+import {
+    getAllFilesInFolder,
+    isFileExists,
+    renameFile,
+    writeFile,
+} from '@services/FileService';
 
 import { FileCollection } from './FileCollection';
 
@@ -47,5 +52,19 @@ export class FileDb implements IDatabase {
         }
 
         return new FileCollection<T>(name, fileName);
+    }
+
+    async getAllCollections(): Promise<ICollection<IRecord>[]> {
+        const files = await getAllFilesInFolder(this.path);
+
+        return files
+            .filter((f) => f.isFile)
+            .map(
+                (f) =>
+                    new FileCollection(
+                        f.name.replace(/(\.json)$/g, ''),
+                        this.getCollectionFileName(f.name)
+                    )
+            );
     }
 }

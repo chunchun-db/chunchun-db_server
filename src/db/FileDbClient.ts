@@ -1,7 +1,11 @@
 import * as path from 'path';
-import { IDatabase, IDbClient } from '@chunchun-db/shared/dist';
+import { IDatabase, IDbClient } from '@chunchun-db/shared';
 
-import { createFolder, isFileExists } from '@services/FileService';
+import {
+    createFolder,
+    isFileExists,
+    getAllFilesInFolder,
+} from '@services/FileService';
 
 import { FileDb } from './FileDb';
 
@@ -10,6 +14,17 @@ const STORAGE_BASE_PATH = path.resolve('./storage');
 export class FileDbClient implements IDbClient {
     getDatabaseFileName(dbName: string) {
         return path.join(STORAGE_BASE_PATH, dbName);
+    }
+
+    async getAllDatabases(): Promise<IDatabase[]> {
+        const allFiles = await getAllFilesInFolder(STORAGE_BASE_PATH);
+
+        return allFiles
+            .filter((file) => file.isDirectory)
+            .map(
+                (file) =>
+                    new FileDb(file.name, this.getDatabaseFileName(file.name))
+            );
     }
 
     async getDatabase(name: string): Promise<IDatabase> {

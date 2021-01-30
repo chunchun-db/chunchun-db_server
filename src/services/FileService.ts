@@ -37,3 +37,7 @@ export async function createFolder(path: string) {
 export async function renameFile(path: string, newName: string) {
     await fs.rename(path, newName);
 }
+
+export async function getAllFilesInFolder(path: string) {
+    return fs.readdir(path, { withFileTypes: true });
+}

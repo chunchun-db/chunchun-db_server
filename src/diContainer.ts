@@ -1,4 +1,4 @@
-import { IDbClient } from '@chunchun-db/shared/dist/IDbClient';
+import { IDbClient } from '@chunchun-db/shared';
 
 import { FileDbClient } from './db/FileDbClient';
 

@@ -13,7 +13,7 @@
     "types": "dist/index.d.ts",
     "repository": {
         "type": "git",
-        "url": "https://github.com/chunchunmaru34/chunchun-db_server"
+        "url": "https://github.com/chunchun-db/chunchun-db_server"
     },
     "_moduleAliases": {
         "@models": "dist/models",
@@ -22,15 +22,21 @@
         "@utils": "dist/utils"
     },
     "dependencies": {
-        "@chunchun-db/shared": "github:chunchunmaru34/chunchun-db_shared#1.0.1",
+        "@chunchun-db/shared": "github:chunchun-db/chunchun-db_shared#1.1.0",
+        "@types/cors": "^2.8.9",
+        "@types/lodash": "^4.14.168",
         "axios": "^0.21.1",
         "body-parser": "^1.19.0",
+        "cors": "^2.8.5",
         "express": "^4.17.1",
         "express-async-errors": "^3.1.1",
-        "module-alias": "^2.2.2"
+        "lodash": "^4.17.20",
+        "module-alias": "^2.2.2",
+        "morgan": "^1.10.0"
     },
     "devDependencies": {
         "@types/express": "^4.17.11",
+        "@types/morgan": "^1.9.2",
         "@types/node": "^14.14.22",
         "typescript": "^4.1.3"
     }

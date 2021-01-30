@@ -1,4 +1,4 @@
-import { ICollection, IRecord } from '@chunchun-db/shared/dist';
+import { ICollection, IRecord } from '@chunchun-db/shared';
 
 import { writeFile, readFile } from '@services/FileService';
 import { generateId } from '@utils/index';
