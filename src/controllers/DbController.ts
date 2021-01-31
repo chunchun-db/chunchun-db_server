@@ -22,11 +22,11 @@ dbRouter.get('/checkIfExist', async (req, res) => {
 });
 
 dbRouter.put('/create', async (req, res) => {
-    if (!req.query.name) {
+    if (!req.body.name) {
         return res.status(400).json({ message: 'No name provided' });
     }
 
-    await dbClient.createDatabase(String(req.query.name));
+    await dbClient.createDatabase(String(req.body.name));
 
     return res.json({ message: 'Ok ' });
 });
@@ -38,12 +38,12 @@ dbRouter.get('/getAll', async (req, res) => {
 });
 
 dbRouter.put('/:dbName/collections/create', async (req, res) => {
-    if (!req.query.name) {
+    if (!req.body.name) {
         return res.status(400).json({ message: 'No name provided' });
     }
 
     const { dbName } = req.params;
-    const { name } = req.query;
+    const { name } = req.body;
 
     const db = await dbClient.getDatabase(dbName);
     await db.createCollection(String(name));

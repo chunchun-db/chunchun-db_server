@@ -12,7 +12,9 @@ export class FileCollection<T extends IRecord> implements ICollection<T> {
         return items || [];
     }
 
-    async add(newItems: Array<Omit<T, 'id'>>): Promise<void> {
+    async add(
+        newItems: Array<Omit<T, 'id'> & Partial<Pick<T, 'id'>>>
+    ): Promise<void> {
         const oldItems = await this.getAll();
 
         let lastId = oldItems[oldItems.length - 1]?.id;
