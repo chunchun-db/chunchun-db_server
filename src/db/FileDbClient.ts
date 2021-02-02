@@ -9,7 +9,9 @@ import {
 
 import { FileDb } from './FileDb';
 
-const STORAGE_BASE_PATH = path.resolve('./storage');
+const defaultStoragePath = path.resolve('./storage');
+const STORAGE_BASE_PATH =
+    process.env.FILE_DB_STORAGE_PATH ?? defaultStoragePath;
 
 export class FileDbClient implements IDbClient {
     getDatabaseFileName(dbName: string) {
