@@ -37,6 +37,10 @@ export class FileCollection<T extends IRecord> implements ICollection<T> {
         await writeFile(this.path, updatedItems);
     }
 
+    async removeAll(): Promise<void> {
+        await writeFile(this.path, []);
+    }
+
     async update(item: T): Promise<void> {
         const oldItems = await this.getAll();
         const updatedItems = oldItems.map((i) => (i.id === item.id ? item : i));

@@ -49,6 +49,17 @@ controllersRouter.delete('/remove', async (req, res) => {
     return res.json({ message: 'Ok ' });
 });
 
+controllersRouter.delete('/removeAll', async (req, res) => {
+    const { dbName, name } = req.params;
+
+    const collection = await dbClient
+        .getDatabase(dbName)
+        .then((db) => db.getCollection(name));
+    await collection.removeAll();
+
+    return res.json({ message: 'Ok ' });
+});
+
 controllersRouter.put('/update', async (req, res) => {
     const { dbName, name } = req.params;
     const item = req.body as IRecord;
