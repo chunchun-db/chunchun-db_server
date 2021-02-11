@@ -11,7 +11,7 @@ import { indexRouter } from './controllers';
 
 const app = express();
 
-app.use(bodyParser.json());
+app.use(bodyParser.json({ limit: '10mb' }));
 app.use(morgan('tiny'));
 app.use(cors());
 app.use('/api/v1/', indexRouter);
