@@ -21,7 +21,7 @@ export class FileCollection<T extends IRecord> implements ICollection<T> {
         const nextId = generateId(lastId);
 
         const newItemsWithIds = newItems.map(
-            (item) => ({ ...item, id: nextId() } as T)
+            (item) => ({ ...item, id: item.id ?? nextId() } as T)
         );
         const items = oldItems.concat(newItemsWithIds);
 
