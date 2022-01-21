@@ -1,50 +1,57 @@
 import { ICollection, IRecord } from '@chunchun-db/shared';
 
 import { writeFile, readFile } from '@services/FileService';
-import { generateId } from '@utils/index';
-
+// import { generateId } from '@utils/index';
 export class FileCollection<T extends IRecord> implements ICollection<T> {
-    constructor(public name: string, private path: string) {}
+  constructor(public name: string, private path: string) {}
 
-    async getAll(): Promise<T[]> {
-        const items = await readFile<T[]>(this.path);
+  async getAll(): Promise<T[]> {
+    const items = await readFile<Record<T['id'], T>>(this.path);
 
-        return items || [];
-    }
+    return Object.values(items ?? {})
+  }
 
-    async add(
-        newItems: Array<Omit<T, 'id'> & Partial<Pick<T, 'id'>>>
-    ): Promise<void> {
-        const oldItems = await this.getAll();
+  async getIndexed(): Promise<Record<string, T>> {
+    const items = await readFile<Record<T['id'], T>>(this.path);
 
-        let lastId = oldItems[oldItems.length - 1]?.id;
-        const nextId = generateId(lastId);
+    return items ?? {};
+  }
 
-        const newItemsWithIds = newItems.map(
-            (item) => ({ ...item, id: item.id ?? nextId() } as T)
-        );
-        const items = oldItems.concat(newItemsWithIds);
+  async add(newItems: Array<Omit<T, 'id'> & Partial<Pick<T, 'id'>>>): Promise<void> {
+    const oldItems = await this.getIndexed();
 
-        await writeFile(this.path, items);
-    }
+    // let lastId = oldItems[oldItems.length - 1]?.id;
 
-    async remove(items: T['id'][]): Promise<void> {
-        const oldItems = await this.getAll();
-        const updatedItems = oldItems.filter(
-            (item) => !items.includes(item.id)
-        );
+    const newItemsWithIds = newItems.map((item, index) => ({ ...item, id: item.id ?? String(index) } as T));
+    const newDictionary = newItemsWithIds.reduce((acc, item) => {
+        acc[item.id] = item;
+        return acc;
+    }, {} as Record<string, T>);
 
-        await writeFile(this.path, updatedItems);
-    }
+    const items = {
+        ...oldItems,
+        ...newDictionary,
+    };
 
-    async removeAll(): Promise<void> {
-        await writeFile(this.path, []);
-    }
+    await writeFile(this.path, items);
+  }
 
-    async update(item: T): Promise<void> {
-        const oldItems = await this.getAll();
-        const updatedItems = oldItems.map((i) => (i.id === item.id ? item : i));
+  async remove(items: T['id'][]): Promise<void> {
+    const oldItems = await this.getIndexed();
+    // const updatedItems = oldItems.filter((item) => !items.includes(item.id));
+    items.forEach(itemId => delete oldItems[itemId]);
 
-        await writeFile(this.path, updatedItems);
-    }
+    await writeFile(this.path, oldItems);
+  }
+
+  async removeAll(): Promise<void> {
+    await writeFile(this.path, {});
+  }
+
+  async update(item: T): Promise<void> {
+    const items = await this.getIndexed();
+    items[item.id] = item;
+
+    await writeFile(this.path, item);
+  }
 }

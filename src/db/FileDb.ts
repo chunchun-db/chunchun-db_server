@@ -31,7 +31,7 @@ export class FileDb implements IDatabase {
             throw new Error('collection with that name already exist');
         }
 
-        await writeFile(fileName, []);
+        await writeFile(fileName, {});
 
         return new FileCollection<T>(name, fileName);
     }
